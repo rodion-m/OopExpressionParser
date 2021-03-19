@@ -23,7 +23,7 @@ namespace OopExpressionParser.Parser
         public Operation? TokenizeOrNull(in string text, ref int index)
         {
             var c = text[index];
-            var operation = _operations.SingleOrDefault(it => c == it.name[0]);
+            var operation = _operations.SingleOrDefault(it => c == it.symbol);
             if (operation != null) 
                 ++index;
             return operation;
