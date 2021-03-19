@@ -83,7 +83,7 @@ namespace OopExpressionParser.Parser
                 if (maybeToken != null)
                     tokens.Add(maybeToken);
                 else
-                    throw new Exception($"Unknown symbol at position: {i}");
+                    throw new ApplicationException($"Unknown symbol at position: {i}");
             } while (i < Text.Length);
 
             return tokens;
