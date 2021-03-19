@@ -3,7 +3,6 @@
     public abstract record Operation(string name, int priority) : IToken
     {
         public abstract long Evaluate(NumberToken token1, NumberToken token2);
-        //Plus, Minus, Divide, Multiple
 
         public record Plus() : Operation("+", priority: 0)
         {
