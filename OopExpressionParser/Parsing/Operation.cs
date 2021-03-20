@@ -1,4 +1,4 @@
-﻿namespace OopExpressionParser.Parser
+﻿namespace OopExpressionParser.Parsing
 {
     public abstract record Operation(char symbol, int priority) : IToken
     {

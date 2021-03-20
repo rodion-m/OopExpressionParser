@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OopExpressionParser", "OopE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OopExpressionParser.Test", "OopExpressionParser.Test\OopExpressionParser.Test.csproj", "{DC6DD7DD-0358-454C-B004-36C96D5D9933}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OopExpressionParser.Benchmark", "OopExpressionParser.Benchmark\OopExpressionParser.Benchmark.csproj", "{2600F531-34C3-4EDA-88B5-A1CE653DA227}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{DC6DD7DD-0358-454C-B004-36C96D5D9933}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC6DD7DD-0358-454C-B004-36C96D5D9933}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC6DD7DD-0358-454C-B004-36C96D5D9933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2600F531-34C3-4EDA-88B5-A1CE653DA227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2600F531-34C3-4EDA-88B5-A1CE653DA227}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2600F531-34C3-4EDA-88B5-A1CE653DA227}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2600F531-34C3-4EDA-88B5-A1CE653DA227}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

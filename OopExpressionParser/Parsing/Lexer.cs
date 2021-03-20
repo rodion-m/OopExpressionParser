@@ -2,29 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OopExpressionParser.Parser
+namespace OopExpressionParser.Parsing
 {
-    public interface ILexer<out T> where T: IToken
+    public interface ILexer<out T> where T : IToken
     {
         T? TokenizeOrNull(in string text, ref int index);
     }
-    
-        public class OperationLexer : ILexer<Operation>
+
+    public class OperationLexer : ILexer<Operation>
     {
-        private readonly Operation[] _operations;
-        public OperationLexer()
-        {
-            _operations = typeof(Operation).Assembly.GetTypes()
-                .Where(it => it.IsSubclassOf(typeof(Operation)))
-                .Select(it => (Operation) Activator.CreateInstance(it)!)
-                .ToArray();
-        }
+        private static readonly Operation[] _operations = ReflectionEx.CreateAllSubclassesOf<Operation>();
 
         public Operation? TokenizeOrNull(in string text, ref int index)
         {
             var c = text[index];
             var operation = _operations.SingleOrDefault(it => c == it.symbol);
-            if (operation != null) 
+            if (operation != null)
                 ++index;
             return operation;
         }
@@ -36,7 +29,7 @@ namespace OopExpressionParser.Parser
         {
             if (!IsNumberChar(text[index]))
                 return null;
-            
+
             var chars = new List<char>() {text[index]};
             var startIndex = index;
             for (var i = startIndex + 1; i < text.Length && IsNumberChar(text[i]); i++)
@@ -51,22 +44,26 @@ namespace OopExpressionParser.Parser
 
         private bool IsNumberChar(char c) => c >= '0' && c <= '9';
     }
-    
+
     public class ExpressionLexer
     {
         public string Text { get; }
 
-        private static readonly ILexer<IToken>[] _parsers =
+        private static readonly ILexer<IToken>[] _parsers = CreateAllLexers();
+
+        /// <summary>
+        /// Creates instances of all Lexers (like NumberLexer, OperationLexer) using reflection
+        /// </summary>
+        private static ILexer<IToken>[] CreateAllLexers()
         {
-            new NumberLexer(), 
-            new OperationLexer()
-        };
+            return ReflectionEx.CreateAllSubclassesOfInterface<ILexer<IToken>>(typeof(ILexer<>));
+        }
 
         public ExpressionLexer(string text)
         {
             Text = text;
         }
-        
+
         public List<IToken> Tokenize()
         {
             var tokens = new List<IToken>();
@@ -89,5 +86,4 @@ namespace OopExpressionParser.Parser
             return tokens;
         }
     }
-
 }

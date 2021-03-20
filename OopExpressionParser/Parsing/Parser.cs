@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace OopExpressionParser.Parser
+namespace OopExpressionParser.Parsing
 {
     public class Parser : IToken
     {
@@ -14,7 +14,7 @@ namespace OopExpressionParser.Parser
 
         public long Parse()
         {
-            var tokens = _tokens;
+            List<IToken> tokens = _tokens;
             var operationsByPriority = GetOperationsSorted(tokens);
             
             foreach (var operation in operationsByPriority)
@@ -22,19 +22,16 @@ namespace OopExpressionParser.Parser
                 var index = tokens.IndexOf(operation);
                 var (leftIndex, rightIndex) = (index - 1, index + 1);
                 var result = operation.Evaluate((NumberToken) tokens[leftIndex], (NumberToken) tokens[rightIndex]);
-                tokens = ReplaceTokens(tokens, leftIndex, rightIndex, result);
+                ReplaceTokens(ref tokens, leftIndex, rightIndex, result);
             }
 
             return ((NumberToken) tokens[0]).number;
         }
 
-        private static List<IToken> ReplaceTokens(List<IToken> tokens, int leftIndex, int rightIndex, long replacement)
+        private static void ReplaceTokens(ref List<IToken> tokens, int leftIndex, int rightIndex, long replacement)
         {
-            return tokens
-                .Take(leftIndex)
-                .Append(new NumberToken(replacement))
-                .Concat(tokens.Skip(rightIndex + 1))
-                .ToList();
+            tokens.RemoveRange(leftIndex, rightIndex - leftIndex + 1);
+            tokens.Insert(leftIndex, new NumberToken(replacement));
         }
 
         private static Operation[] GetOperationsSorted(List<IToken> tokens)

@@ -1,4 +1,4 @@
-﻿namespace OopExpressionParser.Parser
+﻿namespace OopExpressionParser.Parsing
 {
     public interface IToken {}
 
