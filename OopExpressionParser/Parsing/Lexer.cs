@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace OopExpressionParser.Parsing
 {
-    public interface ILexer<out T> where T : IToken
+    internal abstract class Lexer
     {
-        T? TokenizeOrNull(in string text, ref int index);
+        public abstract IToken? TokenizeOrNull(in string text, ref int index);
     }
 
-    public class OperationLexer : ILexer<Operation>
+    internal class OperationLexer : Lexer
     {
         private static readonly Operation[] _operations = ReflectionEx.CreateAllSubclassesOf<Operation>();
 
-        public Operation? TokenizeOrNull(in string text, ref int index)
+        public override Operation? TokenizeOrNull(in string text, ref int index)
         {
             var c = text[index];
             var operation = _operations.SingleOrDefault(it => c == it.symbol);
@@ -23,9 +23,9 @@ namespace OopExpressionParser.Parsing
         }
     }
 
-    public class NumberLexer : ILexer<NumberToken>
+    internal class NumberLexer : Lexer
     {
-        public NumberToken? TokenizeOrNull(in string text, ref int index)
+        public override NumberToken? TokenizeOrNull(in string text, ref int index)
         {
             if (!IsNumberChar(text[index]))
                 return null;
@@ -54,15 +54,7 @@ namespace OopExpressionParser.Parsing
             Text = text;
         }
         
-        private static readonly ILexer<IToken>[] _lexers = CreateAllLexers();
-
-        /// <summary>
-        /// Creates instances of all Lexers (like NumberLexer, OperationLexer) using reflection
-        /// </summary>
-        private static ILexer<IToken>[] CreateAllLexers()
-        {
-            return ReflectionEx.CreateAllSubclassesOfInterface<ILexer<IToken>>(typeof(ILexer<>));
-        }
+        private static readonly Lexer[] _lexers = ReflectionEx.CreateAllSubclassesOf<Lexer>();
 
         public List<IToken> Tokenize()
         {

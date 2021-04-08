@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using OopExpressionParser.Parsing;
+﻿using OopExpressionParser.Parsing;
 
 namespace OopExpressionParser
 {

@@ -1,6 +1,6 @@
 ﻿namespace OopExpressionParser.Parsing
 {
-    public abstract record Operation(char symbol, int priority) : IToken
+    internal abstract record Operation(char symbol, int priority) : IToken
     {
         public abstract long Evaluate(NumberToken token1, NumberToken token2);
 

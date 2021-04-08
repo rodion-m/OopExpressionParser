@@ -1,6 +1,4 @@
-using System;
 using FluentAssertions;
-using NCalc;
 using Xunit;
 
 namespace OopExpressionParser.Test
@@ -20,9 +18,6 @@ namespace OopExpressionParser.Test
         public void TestExpression(string expression, long expected)
         {
             expression.ParseExpression().Should().Be(expected);
-            var expr = new Expression(expression);
-            var v = (int) expr.Evaluate();
-            v.Should().Be((int) expected);
         }
     }
 }
