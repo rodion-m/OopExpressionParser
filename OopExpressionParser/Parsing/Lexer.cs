@@ -48,8 +48,13 @@ namespace OopExpressionParser.Parsing
     public class ExpressionLexer
     {
         public string Text { get; }
-
-        private static readonly ILexer<IToken>[] _parsers = CreateAllLexers();
+        
+        public ExpressionLexer(string text)
+        {
+            Text = text;
+        }
+        
+        private static readonly ILexer<IToken>[] _lexers = CreateAllLexers();
 
         /// <summary>
         /// Creates instances of all Lexers (like NumberLexer, OperationLexer) using reflection
@@ -59,11 +64,6 @@ namespace OopExpressionParser.Parsing
             return ReflectionEx.CreateAllSubclassesOfInterface<ILexer<IToken>>(typeof(ILexer<>));
         }
 
-        public ExpressionLexer(string text)
-        {
-            Text = text;
-        }
-
         public List<IToken> Tokenize()
         {
             var tokens = new List<IToken>();
@@ -71,9 +71,9 @@ namespace OopExpressionParser.Parsing
             do
             {
                 IToken? maybeToken = null;
-                foreach (var parser in _parsers)
+                foreach (var lexer in _lexers)
                 {
-                    maybeToken = parser.TokenizeOrNull(Text, ref i);
+                    maybeToken = lexer.TokenizeOrNull(Text, ref i);
                     if (maybeToken != null) break;
                 }
 
