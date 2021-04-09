@@ -16,7 +16,7 @@ namespace OopExpressionParser.Parsing
         public override Operation? TokenizeOrNull(in string text, ref int index)
         {
             var c = text[index];
-            var operation = _operations.SingleOrDefault(it => c == it.symbol);
+            var operation = _operations.SingleOrDefault(it => c == it.Symbol);
             if (operation != null)
                 ++index;
             return operation;

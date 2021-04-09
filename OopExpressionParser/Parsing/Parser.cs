@@ -26,7 +26,7 @@ namespace OopExpressionParser.Parsing
                 SimplifyOperation(operationNode, result);
             }
 
-            return ((NumberToken) _tokens.First!.Value).number;
+            return ((NumberToken) _tokens.First!.Value).Number;
         }
 
         private void SimplifyOperation(LinkedListNode<IToken> operationNode, long result)
@@ -46,7 +46,7 @@ namespace OopExpressionParser.Parsing
                     operationsNodes.Add(node);
                 
             }
-            return operationsNodes.OrderByDescending(it => ((Operation) it.Value).priority).ToList();
+            return operationsNodes.OrderByDescending(it => ((Operation) it.Value).Priority).ToList();
         }
     }
 }

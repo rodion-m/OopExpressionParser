@@ -2,5 +2,5 @@
 {
     public interface IToken {}
 
-    public record NumberToken(long number) : IToken;
+    public record NumberToken(long Number) : IToken;
 }
