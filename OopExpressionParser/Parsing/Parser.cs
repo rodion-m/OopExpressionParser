@@ -20,8 +20,8 @@ namespace OopExpressionParser.Parsing
             foreach (var operationNode in operationsByPriority)
             {
                 var operation = (Operation) operationNode.Value;
-                var (prevNode, nextNode) = (operationNode.Previous!, operationNode.Next!);
-                var (leftNumber, rightNumber) = ((NumberToken) prevNode.Value, (NumberToken) nextNode.Value);
+                var (prevNode, nextNode) = (operationNode.Previous, operationNode.Next);
+                var (leftNumber, rightNumber) = ((NumberToken) prevNode!.Value, (NumberToken) nextNode!.Value);
                 var result = operation.Evaluate(leftNumber, rightNumber);
                 SimplifyOperation(operationNode, result);
             }
@@ -31,10 +31,10 @@ namespace OopExpressionParser.Parsing
 
         private void SimplifyOperation(LinkedListNode<IToken> operationNode, long result)
         {
-            _tokens.AddBefore(operationNode, new NumberToken(result));
+            _tokens.AddAfter(operationNode.Next!, new NumberToken(result));
             _tokens.Remove(operationNode.Previous!);
-            _tokens.Remove(operationNode);
             _tokens.Remove(operationNode.Next!);
+            _tokens.Remove(operationNode);
         }
 
         private List<LinkedListNode<IToken>> GetOperationsSorted()
