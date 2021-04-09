@@ -56,9 +56,9 @@ namespace OopExpressionParser.Parsing
         
         private static readonly Lexer[] _lexers = ReflectionEx.CreateAllSubclassesOf<Lexer>();
 
-        public List<IToken> Tokenize()
+        public LinkedList<IToken> Tokenize()
         {
-            var tokens = new List<IToken>();
+            var tokens = new LinkedList<IToken>();
             int i = 0;
             do
             {
@@ -70,7 +70,7 @@ namespace OopExpressionParser.Parsing
                 }
 
                 if (maybeToken != null)
-                    tokens.Add(maybeToken);
+                    tokens.AddLast(maybeToken);
                 else
                     throw new ApplicationException($"Unknown symbol at position: {i}");
             } while (i < Text.Length);

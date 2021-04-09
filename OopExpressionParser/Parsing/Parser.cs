@@ -1,46 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OopExpressionParser.Parsing
 {
     public class Parser : IToken
     {
-        private readonly List<IToken> _tokens;
+        private readonly LinkedList<IToken> _tokens;
 
-        public Parser(List<IToken> tokens)
+        public Parser(LinkedList<IToken> tokens)
         {
             _tokens = tokens;
         }
 
         public long Parse()
         {
-            List<IToken> tokens = _tokens;
-            var operationsByPriority = GetOperationsSorted(tokens);
-            
-            foreach (var operation in operationsByPriority)
+            var operationsByPriority = GetOperationsSorted(_tokens);
+
+            for (var index = 0; index < operationsByPriority.Count; index++)
             {
-                var index = tokens.IndexOf(operation);
-                var (leftIndex, rightIndex) = (index - 1, index + 1);
-                var result = operation.Evaluate((NumberToken) tokens[leftIndex], (NumberToken) tokens[rightIndex]);
-                ReplaceTokens(ref tokens, leftIndex, rightIndex, result);
+                var operationNode = operationsByPriority[index];
+                var operation = (Operation) operationNode.Value;
+                var (prevNode, nextNode) = (operationNode.Previous!, operationNode.Next!);
+                var (leftNumber, rightNumber) = ((NumberToken) prevNode.Value, (NumberToken) nextNode.Value);
+                var result = operation.Evaluate(leftNumber, rightNumber);
+                SimplifyOperation(operationNode, result);
             }
 
-            return ((NumberToken) tokens[0]).number;
+            return ((NumberToken) _tokens.First!.Value).number;
         }
 
-        private static void ReplaceTokens(ref List<IToken> tokens, int leftIndex, int rightIndex, long replacement)
+        private void SimplifyOperation(LinkedListNode<IToken> operationNode, long result)
         {
-            tokens.RemoveRange(leftIndex, rightIndex - leftIndex + 1);
-            tokens.Insert(leftIndex, new NumberToken(replacement));
+            _tokens.AddBefore(operationNode, new NumberToken(result));
+            _tokens.Remove(operationNode.Previous!);
+            _tokens.Remove(operationNode);
+            _tokens.Remove(operationNode.Next!);
         }
 
-        private static Operation[] GetOperationsSorted(List<IToken> tokens)
+        private static List<LinkedListNode<IToken>> GetOperationsSorted(LinkedList<IToken> tokens)
         {
-            return tokens
-                .Where(it => it is Operation)
-                .Cast<Operation>()
-                .OrderByDescending(it => it.priority)
-                .ToArray();
+            if (!tokens.Any()) throw new ArgumentException($"{nameof(tokens)} cannot be empty");
+            var operationsNodes = new List<LinkedListNode<IToken>>();
+            for (var node = tokens.First!; node != null; node = node.Next)
+            {
+                if(node.Value is Operation)
+                    operationsNodes.Add(node);
+                
+            }
+            return operationsNodes.OrderByDescending(it => ((Operation) it.Value).priority).ToList();
         }
     }
 }
