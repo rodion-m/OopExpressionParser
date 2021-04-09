@@ -17,9 +17,8 @@ namespace OopExpressionParser.Parsing
         {
             var operationsByPriority = GetOperationsSorted(_tokens);
 
-            for (var index = 0; index < operationsByPriority.Count; index++)
+            foreach (var operationNode in operationsByPriority)
             {
-                var operationNode = operationsByPriority[index];
                 var operation = (Operation) operationNode.Value;
                 var (prevNode, nextNode) = (operationNode.Previous!, operationNode.Next!);
                 var (leftNumber, rightNumber) = ((NumberToken) prevNode.Value, (NumberToken) nextNode.Value);
