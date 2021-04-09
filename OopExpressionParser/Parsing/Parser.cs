@@ -10,13 +10,13 @@ namespace OopExpressionParser.Parsing
 
         public Parser(LinkedList<IToken> tokens)
         {
+            if (!tokens.Any()) throw new ArgumentException($"{nameof(tokens)} cannot be empty");
             _tokens = tokens;
         }
 
         public long Parse()
         {
-            var operationsByPriority = GetOperationsSorted(_tokens);
-
+            var operationsByPriority = GetOperationsSorted();
             foreach (var operationNode in operationsByPriority)
             {
                 var operation = (Operation) operationNode.Value;
@@ -37,11 +37,10 @@ namespace OopExpressionParser.Parsing
             _tokens.Remove(operationNode.Next!);
         }
 
-        private static List<LinkedListNode<IToken>> GetOperationsSorted(LinkedList<IToken> tokens)
+        private List<LinkedListNode<IToken>> GetOperationsSorted()
         {
-            if (!tokens.Any()) throw new ArgumentException($"{nameof(tokens)} cannot be empty");
             var operationsNodes = new List<LinkedListNode<IToken>>();
-            for (var node = tokens.First!; node != null; node = node.Next)
+            for (var node = _tokens.First!; node != null; node = node.Next)
             {
                 if(node.Value is Operation)
                     operationsNodes.Add(node);
