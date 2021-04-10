@@ -46,7 +46,7 @@ namespace OopExpressionParser.Parsing
                     operationsNodes.Add(node);
                 
             }
-            return operationsNodes.OrderByDescending(it => ((Operation) it.Value).Priority).ToList();
+            return operationsNodes.OrderByDescending(it => (Operation) it.Value).ToList();
         }
     }
 }
