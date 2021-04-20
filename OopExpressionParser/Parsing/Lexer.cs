@@ -6,14 +6,14 @@ namespace OopExpressionParser.Parsing
 {
     internal abstract class Lexer
     {
-        public abstract IToken? TokenizeOrNull(in string text, ref int index);
+        public abstract IToken? TokenizeOrNull(in ReadOnlySpan<char> text, ref int index);
     }
 
     internal class OperationLexer : Lexer
     {
         private static readonly Operation[] _operations = ReflectionEx.CreateAllSubclassesOf<Operation>();
 
-        public override Operation? TokenizeOrNull(in string text, ref int index)
+        public override Operation? TokenizeOrNull(in ReadOnlySpan<char> text, ref int index)
         {
             var c = text[index];
             var operation = _operations.SingleOrDefault(it => c == it.Symbol);
@@ -25,31 +25,29 @@ namespace OopExpressionParser.Parsing
 
     internal class NumberLexer : Lexer
     {
-        public override NumberToken? TokenizeOrNull(in string text, ref int index)
+        public override NumberToken? TokenizeOrNull(in ReadOnlySpan<char> text, ref int index)
         {
             if (!IsNumberChar(text[index]))
                 return null;
 
-            var chars = new List<char>() {text[index]};
-            var startIndex = index;
-            for (var i = startIndex + 1; i < text.Length && IsNumberChar(text[i]); i++)
-            {
-                chars.Add(text[i]);
-            }
+            var seekIndex = index + 1;
+            while (seekIndex < text.Length && IsNumberChar(text[seekIndex]))
+                seekIndex++;
 
-            index += chars.Count;
+            var result = new NumberToken(int.Parse(text[index..seekIndex]));
+            index = seekIndex;
 
-            return new NumberToken(int.Parse(new string(chars.ToArray())));
+            return result;
         }
 
-        private bool IsNumberChar(char c) => c >= '0' && c <= '9';
+        private static bool IsNumberChar(char c) => c is >= '0' and <= '9';
     }
 
     public class ExpressionLexer
     {
         public string Text { get; }
         
-        public ExpressionLexer(string text)
+        public ExpressionLexer(in string text)
         {
             Text = text;
         }
@@ -58,22 +56,23 @@ namespace OopExpressionParser.Parsing
 
         public LinkedList<IToken> Tokenize()
         {
+            var textSpan = Text.AsSpan();
             var tokens = new LinkedList<IToken>();
-            int i = 0;
+            var index = 0;
             do
             {
                 IToken? maybeToken = null;
                 foreach (var lexer in _lexers)
                 {
-                    maybeToken = lexer.TokenizeOrNull(Text, ref i);
+                    maybeToken = lexer.TokenizeOrNull(textSpan, ref index);
                     if (maybeToken != null) break;
                 }
 
                 if (maybeToken != null)
                     tokens.AddLast(maybeToken);
                 else
-                    throw new ApplicationException($"Unknown symbol at position: {i}");
-            } while (i < Text.Length);
+                    throw new ApplicationException($"Unknown symbol at position: {index}");
+            } while (index < Text.Length);
 
             return tokens;
         }
