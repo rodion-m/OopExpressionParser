@@ -16,9 +16,9 @@ namespace OopExpressionParser.Parsing
 
         public override Operation? TokenizeOrNull(in ReadOnlySpan<char> text, ref int index)
         {
-            var operation = _operationsDict[text[index]];
-            if (operation != null)
+            if(_operationsDict.TryGetValue(text[index], out var operation))
                 ++index;
+            
             return operation;
         }
     }
