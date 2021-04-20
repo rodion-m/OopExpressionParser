@@ -12,11 +12,11 @@ namespace OopExpressionParser.Parsing
     internal class OperationLexer : Lexer
     {
         private static readonly Operation[] _operations = ReflectionEx.CreateAllSubclassesOf<Operation>();
+        private static readonly Dictionary<char, Operation> _operationsDict = _operations.ToDictionary(it => it.Symbol);
 
         public override Operation? TokenizeOrNull(in ReadOnlySpan<char> text, ref int index)
         {
-            var c = text[index];
-            var operation = _operations.SingleOrDefault(it => c == it.Symbol);
+            var operation = _operationsDict[text[index]];
             if (operation != null)
                 ++index;
             return operation;
@@ -52,7 +52,11 @@ namespace OopExpressionParser.Parsing
             Text = text;
         }
         
-        private static readonly Lexer[] _lexers = ReflectionEx.CreateAllSubclassesOf<Lexer>();
+        private static readonly Lexer[] _lexers =
+        {
+            new NumberLexer(),
+            new OperationLexer()
+        };
 
         public LinkedList<IToken> Tokenize()
         {
