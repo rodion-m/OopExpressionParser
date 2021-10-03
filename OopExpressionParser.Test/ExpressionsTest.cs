@@ -5,12 +5,31 @@ using System.Text.Json;
 using FluentAssertions;
 using Xunit;
 
+interface INode  {
+    int Calculate ();
+}
+
+class LiteralNode : INode
+{
+    public int Calculate()
+    {
+        throw new NotImplementedException();
+    }
+}
+
+class PlusNode : INode {
+    public int Calculate()
+    {
+        throw new NotImplementedException();
+    }
+}
+
 namespace OopExpressionParser.Test
 {
     public class ExpressionsTest
     {
         [Theory]
-        [InlineData("2+2*2", 6)]
+        [InlineData("2+3*5-6", 6)]
         [InlineData("2+2*10", 22)]
         [InlineData("2/2*10", 10)]
         [InlineData("2*0*10", 0)]

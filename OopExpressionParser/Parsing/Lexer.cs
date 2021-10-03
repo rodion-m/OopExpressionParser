@@ -75,7 +75,7 @@ namespace OopExpressionParser.Parsing
                 if (maybeToken != null)
                     tokens.AddLast(maybeToken);
                 else
-                    throw new ApplicationException($"Unknown symbol at position: {index}");
+                    throw new UnknownTokenException(index);
             } while (index < Text.Length);
 
             return tokens;
