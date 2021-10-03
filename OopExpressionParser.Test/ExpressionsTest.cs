@@ -5,24 +5,7 @@ using System.Text.Json;
 using FluentAssertions;
 using Xunit;
 
-interface INode  {
-    int Calculate ();
-}
 
-class LiteralNode : INode
-{
-    public int Calculate()
-    {
-        throw new NotImplementedException();
-    }
-}
-
-class PlusNode : INode {
-    public int Calculate()
-    {
-        throw new NotImplementedException();
-    }
-}
 
 namespace OopExpressionParser.Test
 {
